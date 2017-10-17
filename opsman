@@ -108,13 +108,14 @@ upload_all_to_opsman() {
 }
 
 export_installation() {
-  local LOCAL_FILE_NAME=$1
+  local LOCAL_FILE_NAME='installation.zip'
 
-  if [ -z "$LOCAL_FILE_NAME" ]; then
-    read -r -p "Export installation location: " LOCAL_FILE_NAME
+  local UAA_ACCESS_TOKEN=$(uaac context | grep access_token | awk '{ print $2 }')
+
+  if ! is_valid_access_token "$UAA_ACCESS_TOKEN"; then
+    login_to_uaac
+    UAA_ACCESS_TOKEN=$(uaac context | grep access_token | awk '{ print $2 }')
   fi
-
-  echo "Saving installation export to: $LOCAL_FILE_NAME"
 
   curl "https://localhost/api/v0/installation_asset_collection" \
     -k -# -o $LOCAL_FILE_NAME \
