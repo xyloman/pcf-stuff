@@ -108,8 +108,6 @@ upload_all_to_opsman() {
 }
 
 export_installation() {
-  local LOCAL_FILE_NAME='installation.zip'
-
   local UAA_ACCESS_TOKEN=$(uaac context | grep access_token | awk '{ print $2 }')
 
   if ! is_valid_access_token "$UAA_ACCESS_TOKEN"; then
@@ -119,7 +117,28 @@ export_installation() {
 
   curl "https://localhost/api/v0/installation_asset_collection" \
     -H "Authorization: Bearer $UAA_ACCESS_TOKEN" \
-    -k -# -o 'install.zip'    
+    -k -# -o 'install.zip'
+}
+
+import_installation() {
+
+  local PASSPHRASE=$1
+  if [ -z "$PASSPHRASE" ]; then
+    read -r -p "Unlock Passphrase: " PASSPHRASE
+  fi
+
+  local UAA_ACCESS_TOKEN=$(uaac context | grep access_token | awk '{ print $2 }')
+
+  if ! is_valid_access_token "$UAA_ACCESS_TOKEN"; then
+    login_to_uaac
+    UAA_ACCESS_TOKEN=$(uaac context | grep access_token | awk '{ print $2 }')
+  fi
+
+  curl "https://localhost/api/v0/installation_asset_collection" \
+    -X POST
+    -F 'installation[file]=@install.zip' \
+    -F 'passphrase=$PASSPHRASE'
+
 }
 
 CMD=$1 ARG=$2
@@ -132,6 +151,8 @@ elif [ "stemcell" = "$CMD" ]; then
   upload_stemcell "$ARG"
 elif [ "export" = "$CMD" ]; then
   export_installation "$ARG"
+elif [ "import" = "$CMD" ]; then
+  import_installation "$ARG"
 else
   usage_and_exit
 fi
