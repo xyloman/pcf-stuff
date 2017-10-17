@@ -114,18 +114,10 @@ export_installation() {
     read -r -p "Export installation location: " LOCAL_FILE_NAME
   fi
 
-  if [ ! -f "$LOCAL_FILE_NAME" ]; then
-    error_and_exit "Invalid file: $LOCAL_FILE_NAME"
-  fi
-
   local OPSMAN_HOST=$2
 
   if [ -z "$OPSMAN_HOST" ]; then
     read -r -p "Opsman host: " OPSMAN_HOST
-  fi
-
-  if [ ! -f "$OPSMAN_HOST" ]; then
-    error_and_exit "Invalid file: $OPSMAN_HOST"
   fi
 
   echo "Saving installation export to: $LOCAL_FILE_NAME"
