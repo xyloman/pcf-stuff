@@ -122,10 +122,8 @@ export_installation() {
 
 import_installation() {
 
-  local PASSPHRASE=$1
-  if [ -z "$PASSPHRASE" ]; then
-    read -r -p "Unlock Passphrase: " PASSPHRASE
-  fi
+  local PASSPHRASE=
+  read -r -s -p "Unlock passphrase: " PASSPHRASE
 
   curl "https://localhost/api/v0/installation_asset_collection" \
     -X POST
