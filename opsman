@@ -125,8 +125,10 @@ import_installation() {
   local PASSPHRASE=
   read -r -s -p "Unlock passphrase: " PASSPHRASE
 
+  echo "Importing installation assets"
   curl "https://localhost/api/v0/installation_asset_collection" \
-    -X POST -k \
+    -k -# -o /dev/null \
+    -X POST \
     -F 'installation[file]=@install.zip' \
     -F 'passphrase=$PASSPHRASE'
 
