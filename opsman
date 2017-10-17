@@ -114,16 +114,9 @@ export_installation() {
     read -r -p "Export installation location: " LOCAL_FILE_NAME
   fi
 
-  local OPSMAN_HOST=$2
-
-  if [ -z "$OPSMAN_HOST" ]; then
-    read -r -p "Opsman host: " OPSMAN_HOST
-  fi
-
   echo "Saving installation export to: $LOCAL_FILE_NAME"
-  echo "Using opsman host: $OPSMAN_HOST"
 
-  curl "https://${OPSMAN_HOST}/api/v0/installation_asset_collection" \
+  curl "https://localhost/api/v0/installation_asset_collection" \
     -k -# -o $LOCAL_FILE_NAME \
     -X GET \ 
     -H "Authorization: Bearer $UAA_ACCESS_TOKEN" 
