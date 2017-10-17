@@ -118,9 +118,8 @@ export_installation() {
   fi
 
   curl "https://localhost/api/v0/installation_asset_collection" \
-    -k -# -o $LOCAL_FILE_NAME \
-    -X GET \ 
     -H "Authorization: Bearer $UAA_ACCESS_TOKEN" 
+    -k -# -o 'install.zip'    
 }
 
 CMD=$1 ARG=$2
