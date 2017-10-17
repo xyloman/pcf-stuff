@@ -13,6 +13,7 @@ Examples:
   opsman login
   opsman upload cf-1.8.5-build.4.pivotal
   opsman stemcell bosh-stemcell-3363.24-vsphere-esxi-ubuntu-trusty-go_agent.tgz
+  opsman export
 EOF
   exit 1
 }
@@ -106,6 +107,25 @@ upload_all_to_opsman() {
   done
 }
 
+export_installation() {
+  local LOCAL_FILE_NAME=$1
+
+  if [ -z "$LOCAL_FILE_NAME" ]; then
+    read -r -p "Export installation location: " LOCAL_FILE_NAME
+  fi
+
+  if [ ! -f "$LOCAL_FILE_NAME" ]; then
+    error_and_exit "Invalid file: $LOCAL_FILE_NAME"
+  fi
+
+  echo "Saving installation export to: $LOCAL_FILE_NAME"
+
+  curl "https://localhost/api/v0/installation_asset_collection" \
+    -k -# -o $LOCAL_FILE_NAME \
+    -X GET \ 
+    -H "Authorization: Bearer $UAA_ACCESS_TOKEN" 
+}
+
 CMD=$1 ARG=$2
 
 if [ "login" = "$CMD" ]; then
@@ -114,6 +134,8 @@ elif [ "upload" = "$CMD" ]; then
   upload_all_to_opsman "$ARG"
 elif [ "stemcell" = "$CMD" ]; then
   upload_stemcell "$ARG"
+elif [ "export" = "$CMD" ]; then
+  export_installation "$ARG"
 else
   usage_and_exit
 fi
